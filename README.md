@@ -7,7 +7,7 @@ This module allows you to add interactive content and guides to an Edrys class. 
 Simply use this URL to add the module to your class:
 
 ```
-https://edrys-lite.github.io/module-liascript/
+https://edrys-labs.github.io/module-liascript/
 ```
 
 You must specify the following configuration:
