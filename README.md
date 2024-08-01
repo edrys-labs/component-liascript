@@ -14,6 +14,9 @@ You must specify the following configuration:
 
 ```
 {
-    "course": "LIASCRIPT_COURSE_URL"
+    "course": "LIASCRIPT_COURSE_URL",
+    "classroom": false
 }
 ```
+
+The `classroom` is optional, by default it is set to true and in the lobby there is also now classroom synchronization.
