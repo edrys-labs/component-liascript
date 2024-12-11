@@ -13,6 +13,7 @@
     <title>LiaScript</title>
 
     <script src="https://edrys-labs.github.io/module/edrys.js"></script>
+    <script src="https://edrys-labs.github.io/module/vendor/alpine.min.js"></script>
 
     <script>
       function init(iframe) {
@@ -56,12 +57,37 @@
 
   <body>
     <template
-      x-if="!!edrys && !!url"
+      x-if="!!edrys"
       x-data="{ edrys: undefined, url: undefined }"
-      x-init="Edrys.onUpdate((e) => { 
-                            edrys = {...e} 
-                            url = `https://liascript.github.io/course/?${Edrys.liveRoom.name == 'Lobby' || edrys.module.config.classroom == 'false' ? edrys.module.config.course : btoa(JSON.stringify({'backend':'edrys','course':edrys.module.config.course,'room':Edrys.liveRoom.name}))}` 
-                      })"
+      x-init="Edrys.onReady(() => { 
+        edrys = {...Edrys};
+        
+        let uri = '';
+        let classroom = edrys.module.config.classroom && edrys.liveUser.room !== 'Lobby';
+
+        if (edrys.module.config.course) {
+          console.log('loading course from URL');
+          uri = edrys.module.config.course;
+        } else {
+          let content;
+          if (edrys.module.config.content) {
+            console.log('loading content from configuration');
+            content = edrys.module.config.content;
+          } else {
+            console.warn('no content defined');
+            content = '# Warning no content defined\n\nSee the documentation for more information.\n\nhttps://github.com/edrys-labs/module-liascript';
+            classroom = false;
+          }
+          uri = `data:text/plain;base64,${btoa(content)}`;
+        }
+
+        if (classroom) {
+          console.log('loading course in classroom mode');
+          uri = btoa(JSON.stringify({'backend':'edrys','course':uri,'room':Edrys.class_id+'/'+Edrys.liveUser.room}));
+        }
+
+        url = `https://liascript.github.io/course/?${uri}`;
+      })"
     >
       <iframe
         :src="url"
